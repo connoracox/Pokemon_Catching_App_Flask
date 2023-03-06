@@ -1,0 +1,13 @@
+{% extends "base.jinja" %}
+
+{% block content %}
+    <h2>POKEMON</h2>
+    <h2>Trainers:</h2>
+    {% for human in cdn.humans %}
+        <span>{{ human }} </span>
+    {% endfor %}
+    <h2>Pokemon:</h2>
+    {% for pokemon in cdn.pokemon %}
+        <p>{{ pokemon }}</p>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.jinja" %}
+
+{% block content %}
+    <h2>Register Here</h2>
+    <form action="" method="post">
+        {{ register_form.hidden_tag() }}
+        <p>
+        {{ register_form.first_name.label }}<br>
+        {{ register_form.first_name(size=32) }}
+        </p>
+        <p>
+        {{ register_form.last_name.label }}<br>
+        {{ register_form.last_name(size=32) }}
+        </p>
+        <p>
+        {{ register_form.username.label }}<br>
+        {{ register_form.username(size=32) }}
+        </p>
+        <p>
+        {{ register_form.email.label }}<br>
+        {{ register_form.email(size=32) }}
+        </p>
+        <p>
+        {{ register_form.password.label }}<br>
+        {{ register_form.password(size=32) }}
+        </p>
+        <p>
+        {{ register_form.confirm_password.label }}<br>
+        {{ register_form.confirm_password(size=32) }}
+        </p>
+        
+        <p>
+        {{ register_form.submit(class='btn btn-primary') }}
+        </p>
+    </form>
+
+{% endblock %}

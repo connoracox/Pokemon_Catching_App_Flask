@@ -1,0 +1,16 @@
+{% extends "base.jinja" %}
+
+{% block content %}
+    <h2>Search Pokemon Here</h2>
+    <form action="" method="post">
+        {{ search_pokemon.hidden_tag() }}
+        <p>
+        {{ search_pokemon.name.label }}<br>
+        {{ search_pokemon.name(size=32) }}
+        </p>
+        <p>
+        {{ search_pokemon.submit(class='btn btn-primary') }}
+        </p>
+{% endblock %}
+
+

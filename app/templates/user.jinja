@@ -1,0 +1,10 @@
+{% extends "base.jinja" %}
+
+{% block content %}
+<h2>{{ user.username  }} Your Pokemon</h2>
+
+{% for pokemon in pokemon %}
+    <p>{{ user.username }} caught: {{ pokemon.name }}!</p>
+{% endfor %}
+
+{% endblock %}
