@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, request
-from app import app 
+from app import app, db
 from app.forms import RegisterForm, SignInForm, SearchPokemon
 from app.models import User, Pokemon
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 import requests 
 
 
@@ -53,7 +53,7 @@ def sign_in():
         password_match = User.query.filter_by(password=password).first()
         if not user_match or not password_match:
             flash(f'Username and/or Password was incorrect. Try again!')
-            return redirect('/log_in')
+            return redirect('/sign_in')
         flash(f'{username} successfully signed in!')
         login_user(user_match, remember=form.remember_me.data)
         return redirect('/')
@@ -71,7 +71,8 @@ def user(username):
     if not user_match:
         return redirect('/')
     pokemon = user_match.pokemon
-    return render_template('your_pokemon.jinja', user=user_match, pokemon=pokemon)
+    print(pokemon)
+    return render_template('user.jinja', user=user_match, pokemon=pokemon)
 
 @app.route('/your_pokemon')
 @login_required
@@ -90,21 +91,28 @@ def search():
             flash("Pokemon does not exist")
             return redirect('/search_pokemon')
         data = response.json()
-        for pokemon in data:
-            pokemon_dict = {}
-            pokemon_dict = {
-                "id": data['id'], 
-                "name": data['name'].title(),
-                "ability":data['abilities'][0]["ability"]["name"],
-                "base_experience":data['base_experience'],
-                "base_attack": data['stats'][1]['base_stat'],
-                "hp_base":data['stats'][0]['base_stat'],
-                "sprite":data['sprites']['other']['home']["front_default"]                                             
-            }
+        pokemon_dict = {}
+        pokemon_dict = {
+            "id": data['id'], 
+            "name": data['name'].title(),
+            "ability":data['abilities'][0]["ability"]["name"],
+            "base_experience":data['base_experience'],
+            "base_attack": data['stats'][1]['base_stat'],
+            "hp_base":data['stats'][0]['base_stat'],
+            "sprite":data['sprites']['other']['home']["front_default"]                                             
+        }
 
-            if not Pokemon.check_if_known(pokemon_dict['name']):
-                pokemon = Pokemon()
-                pokemon.from_dict(pokemon_dict)
-                pokemon.commit()
-                return redirect('/your_pokemon')
+        if not Pokemon.check_if_known(pokemon_dict['name']):
+            pokemon = Pokemon()
+            pokemon.from_dict(pokemon_dict)
+            pokemon.commit()
+        
+        if name.title() not in [pokemon.name for pokemon in current_user.pokemon]:
+            poke_var = Pokemon.query.filter_by(name=name.title()).first()
+            current_user.pokemon.append(poke_var)
+            db.session.commit()
+        else:
+            flash("You already caught that Pokemon! Please try again")
+            return redirect('/search_pokemon')
+        return redirect(f'/user/{current_user.username}')
     return render_template('search_pokemon.jinja', search_pokemon=form)

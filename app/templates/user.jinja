@@ -5,6 +5,7 @@
 
 {% for pokemon in pokemon %}
     <p>{{ user.username }} caught: {{ pokemon.name }}!</p>
+    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/{{ pokemon.id }}.png">
 {% endfor %}
 
 {% endblock %}
